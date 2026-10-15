@@ -17,7 +17,7 @@
       margin:0; background:var(--bg); color:var(--text);
       font:16px/1.6 system-ui,Arial,sans-serif;
     }
-    button,input,textarea { font:inherit; }
+    button,input { font:inherit; }
     button,a { -webkit-tap-highlight-color:transparent; }
     a { color:var(--cyan); text-decoration:none; }
     button {
@@ -27,7 +27,7 @@
     }
     button:hover { border-color:var(--cyan); transform:translateY(-1px); }
     button.primary { background:linear-gradient(120deg,#0891b2,#2563eb); }
-    input,textarea {
+    input {
       width:100%; padding:12px; margin:6px 0 14px;
       color:white; background:#091727; border:1px solid var(--line);
       border-radius:9px;
@@ -71,9 +71,7 @@
       display:inline-block; padding:4px 9px; border-radius:30px;
       background:#164e6380; color:var(--cyan); font-size:12px;
     }
-    .field-label { display:block; font-weight:650; }
     .status { min-height:26px; color:var(--green); overflow-wrap:anywhere; }
-    .hidden { display:none !important; }
     .cart-line {
       display:flex; justify-content:space-between; gap:12px;
       align-items:center; padding:12px 0; border-bottom:1px solid var(--line);
@@ -102,8 +100,6 @@
       <button data-go="wiki">Wiki</button>
       <button data-go="news">News</button>
       <button data-go="cart">Cart <span id="cartCount">0</span></button>
-      <button data-go="account" id="accountNav">Login / Register</button>
-      <button data-go="profile" id="profileNav" class="hidden">Profile</button>
     </div>
   </nav>
 </header>
@@ -125,7 +121,7 @@
   <section id="store">
     <span class="pill">FROZENSV STORE</span>
     <h2>Support the server</h2>
-    <p class="muted">Browse example packages. Products and prices below are placeholders.</p>
+    <p class="muted">Example packages only. No real purchases are enabled.</p>
     <div id="storeGrid" class="grid"></div>
   </section>
 
@@ -145,9 +141,7 @@
     <span class="pill">KNOWLEDGE BASE</span>
     <h2>FrozenSV Wiki</h2>
     <input id="wikiSearch" placeholder="Search guides, rules, commands...">
-    <div id="wikiArticles" class="grid">
-      <p class="muted">Loading articles...</p>
-    </div>
+    <div id="wikiArticles" class="grid"></div>
   </section>
 
   <section id="news">
@@ -164,23 +158,6 @@
       </article>
     </div>
   </section>
-
-  <section id="admin" class="hidden">
-    <h2>Owner article editor</h2>
-    <p class="muted">Only the configured owner account can publish articles.</p>
-    <form id="articleForm" class="card">
-      <input id="articleTitle" placeholder="Article title" maxlength="120" required>
-      <input id="articleSlug" placeholder="article-slug"
-             pattern="[a-z0-9]+(-[a-z0-9]+)*" required>
-      <input id="articleCategory" placeholder="Category" maxlength="60" required>
-      <textarea id="articleContent" placeholder="Article content"
-                maxlength="50000" required></textarea>
-      <button class="primary" type="submit">Publish article</button>
-      <button id="cancelEdit" type="button">New article</button>
-    </form>
-    <div id="manageArticles"></div>
-  </section>
-  <p id="globalStatus" class="status" aria-live="polite"></p>
 </main>
 
 <footer>
@@ -188,9 +165,7 @@
   <p>Survive the cold. Build your legacy.</p>
   <p>Unofficial community website unless operated by the server owner.</p>
 </footer>
-  
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="config.js"></script>
+
 <script src="script.js"></script>
 </body>
 </html>
