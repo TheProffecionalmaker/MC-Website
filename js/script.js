@@ -1,114 +1,246 @@
-// Mobile nav toggle
-(function(){
-  var toggle = document.querySelector('.menu-toggle');
-  var nav = document.querySelector('.primary-nav');
-  if(!toggle || !nav) return;
-  toggle.addEventListener('click', function(){
-    var open = nav.classList.toggle('open');
-    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-  });
-  nav.querySelectorAll('a').forEach(function(link){
-    link.addEventListener('click', function(){
-      nav.classList.remove('open');
-      toggle.setAttribute('aria-expanded', 'false');
-    });
-  });
-})();
 
-// Work page filtering
-(function(){
-  var filters = document.querySelectorAll('.filter-btn');
-  var cards = document.querySelectorAll('.project-card');
-  if(!filters.length || !cards.length) return;
-  var countEl = document.querySelector('.section-head .count');
+const $ = id => document.getElementById(id);
 
-  function applyFilter(category){
-    var visible = 0;
-    cards.forEach(function(card){
-      var cats = (card.getAttribute('data-category') || '').split(' ');
-      var show = category === 'all' || cats.indexOf(category) !== -1;
-      card.classList.toggle('hidden', !show);
-      if(show) visible++;
-    });
-    if(countEl) countEl.textContent = visible + (visible === 1 ? ' project' : ' projects');
+const articlesEl = $("articles");
+const statusEl = $("status");
+const adminEl = $("admin");
+const editorEl = $("editor");
+const loginForm = $("loginForm");
+const articleForm = $("articleForm");
+
+let articles = [];
+let editingId = null;
+
+function showStatus(message) {
+  statusEl.textContent = message;
+}
+
+function isOwner(user) {
+  return Boolean(user && user.id === OWNER_UID);
+}
+
+function makeArticleCard(article) {
+  const card = document.createElement("article");
+  card.className = "article";
+
+  const title = document.createElement("h2");
+  title.textContent = article.title;
+
+  const category = document.createElement("p");
+  category.className = "muted";
+  category.textContent = article.category;
+
+  const content = document.createElement("p");
+  content.textContent = article.content;
+  content.style.whiteSpace = "pre-wrap";
+
+  const updated = document.createElement("small");
+  updated.className = "muted";
+  updated.textContent =
+    "Updated: " + new Date(article.updated_at).toLocaleDateString();
+
+  card.append(title, category, content, updated);
+  return card;
+}
+
+async function loadArticles() {
+  articlesEl.textContent = "Loading articles...";
+
+  const { data, error } = await supabaseClient
+    .from("wiki_articles")
+    .select("id,slug,title,category,content,updated_at")
+    .order("title");
+
+  if (error) {
+    articlesEl.textContent = "Could not load wiki articles.";
+    return;
   }
 
-  filters.forEach(function(btn){
-    btn.addEventListener('click', function(){
-      filters.forEach(function(b){ b.classList.remove('active'); });
-      btn.classList.add('active');
-      applyFilter(btn.getAttribute('data-filter'));
-    });
-  });
-})();
+  articles = data || [];
+  renderArticles();
+  if (editorEl.style.display !== "none") renderManageArticles();
+}
 
-// Contact form validation + fake submit
-(function(){
-  var form = document.querySelector('.contact-form');
-  if(!form) return;
-  var success = document.querySelector('.form-success');
+function renderArticles() {
+  const query = $("search").value.trim().toLowerCase();
+  articlesEl.replaceChildren();
 
-  function setError(field, msg){
-    var wrap = field.closest('.field');
-    if(!wrap) return;
-    var errEl = wrap.querySelector('.error-msg');
-    if(msg){
-      wrap.classList.add('invalid');
-      if(errEl) errEl.textContent = msg;
-    } else {
-      wrap.classList.remove('invalid');
-    }
+  const filtered = articles.filter(article =>
+    [article.title, article.category, article.content]
+      .some(value => value.toLowerCase().includes(query))
+  );
+
+  if (!filtered.length) {
+    articlesEl.textContent = "No articles found.";
+    return;
   }
 
-  form.addEventListener('submit', function(e){
-    e.preventDefault();
-    var valid = true;
+  filtered.forEach(article =>
+    articlesEl.append(makeArticleCard(article))
+  );
+}
 
-    var name = form.querySelector('[name="name"]');
-    if(name && !name.value.trim()){
-      setError(name, 'Enter your name');
-      valid = false;
-    } else if(name){
-      setError(name, null);
-    }
+$("search").addEventListener("input", renderArticles);
 
-    var email = form.querySelector('[name="email"]');
-    var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if(email && !emailPattern.test(email.value.trim())){
-      setError(email, 'Enter a valid email');
-      valid = false;
-    } else if(email){
-      setError(email, null);
-    }
+$("adminLink").addEventListener("click", async () => {
+  adminEl.style.display = "block";
+  await checkSession();
+});
 
-    var message = form.querySelector('[name="message"]');
-    if(message && message.value.trim().length < 10){
-      setError(message, 'Tell us a little more (10 characters minimum)');
-      valid = false;
-    } else if(message){
-      setError(message, null);
-    }
+loginForm.addEventListener("submit", async event => {
+  event.preventDefault();
+  showStatus("Signing in...");
 
-    if(!valid) return;
-
-    form.classList.add('hidden-after-submit');
-    if(success) success.classList.add('visible');
+  const { error } = await supabaseClient.auth.signInWithPassword({
+    email: $("email").value,
+    password: $("password").value
   });
 
-  form.querySelectorAll('input, textarea').forEach(function(field){
-    field.addEventListener('input', function(){
-      setError(field, null);
+  if (error) {
+    showStatus("Sign-in failed. Check your email and password.");
+    return;
+  }
+
+  await checkSession();
+});
+
+async function checkSession() {
+  const { data, error } = await supabaseClient.auth.getSession();
+
+  if (error) {
+    showStatus("Could not check login.");
+    return;
+  }
+
+  const user = data.session?.user;
+
+  if (isOwner(user)) {
+    loginForm.style.display = "none";
+    editorEl.style.display = "block";
+    editorEl.classList.remove("hidden");
+    await loadArticles();
+    showStatus("Owner signed in.");
+  } else {
+    editorEl.style.display = "none";
+    editorEl.classList.add("hidden");
+    loginForm.style.display = "block";
+  }
+}
+
+$("logout").addEventListener("click", async () => {
+  await supabaseClient.auth.signOut();
+  resetForm();
+  await checkSession();
+  showStatus("Signed out.");
+});
+
+function resetForm() {
+  editingId = null;
+  articleForm.reset();
+  $("formTitle").textContent = "Create article";
+}
+
+$("newArticle").addEventListener("click", resetForm);
+
+articleForm.addEventListener("submit", async event => {
+  event.preventDefault();
+
+  const { data, error: authError } =
+    await supabaseClient.auth.getUser();
+
+  if (authError || !isOwner(data.user)) {
+    showStatus("Owner login required.");
+    await checkSession();
+    return;
+  }
+
+  const article = {
+    title: $("title").value.trim(),
+    slug: $("slug").value.trim(),
+    category: $("category").value.trim(),
+    content: $("content").value
+  };
+
+  if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(article.slug)) {
+    showStatus("Use lowercase letters, numbers, and hyphens in the slug.");
+    return;
+  }
+
+  showStatus("Saving...");
+
+  const result = editingId
+    ? await supabaseClient.from("wiki_articles")
+        .update(article).eq("id", editingId)
+    : await supabaseClient.from("wiki_articles").insert(article);
+
+  if (result.error) {
+    showStatus("Save failed: " + result.error.message);
+    return;
+  }
+
+  resetForm();
+  showStatus("Article saved!");
+  await loadArticles();
+});
+
+function renderManageArticles() {
+  const container = $("manageArticles");
+  container.replaceChildren();
+
+  articles.forEach(article => {
+    const row = document.createElement("div");
+    row.className = "article";
+
+    const name = document.createElement("p");
+    name.textContent = article.title;
+
+    const edit = document.createElement("button");
+    edit.textContent = "Edit";
+    edit.addEventListener("click", () => {
+      editingId = article.id;
+      $("title").value = article.title;
+      $("slug").value = article.slug;
+      $("category").value = article.category;
+      $("content").value = article.content;
+      $("formTitle").textContent = "Edit article";
+      window.scrollTo({ top: 0, behavior: "smooth" });
     });
-  });
-})();
 
-// Active nav link
-(function(){
-  var path = window.location.pathname.split('/').pop() || 'index.html';
-  document.querySelectorAll('.primary-nav a').forEach(function(link){
-    var href = link.getAttribute('href').split('/').pop();
-    if(href === path){
-      link.classList.add('active');
-    }
+    const remove = document.createElement("button");
+    remove.textContent = "Delete";
+    remove.addEventListener("click", async () => {
+      if (!confirm(`Delete "${article.title}"?`)) return;
+
+      const { data, error: authError } =
+        await supabaseClient.auth.getUser();
+
+      if (authError || !isOwner(data.user)) {
+        showStatus("Owner login required.");
+        return;
+      }
+
+      const { error } = await supabaseClient
+        .from("wiki_articles")
+        .delete()
+        .eq("id", article.id);
+
+      if (error) {
+        showStatus("Delete failed: " + error.message);
+        return;
+      }
+
+      showStatus("Article deleted.");
+      await loadArticles();
+    });
+
+    row.append(name, edit, remove);
+    container.append(row);
   });
-})();
+}
+
+supabaseClient.auth.onAuthStateChange(() => {
+  setTimeout(() => checkSession(), 0);
+});
+
+checkSession();
+loadArticles();
