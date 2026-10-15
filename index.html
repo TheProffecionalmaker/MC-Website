@@ -1,102 +1,105 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ledger Studio — Independent design practice</title>
-<meta name="description" content="An independent design and development studio taking on a small number of projects at a time.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FrozenSV Wiki</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 30px 16px;
+      font-family: Arial, sans-serif;
+      background: #0b1220;
+      color: #e8f7ff;
+    }
+    main {
+      max-width: 900px;
+      margin: auto;
+    }
+    h1 { color: #67e8f9; }
+    a { color: #67e8f9; }
+    .article {
+      padding: 18px;
+      margin: 14px 0;
+      background: #152238;
+      border: 1px solid #29445e;
+      border-radius: 12px;
+    }
+    .article h2 { margin-top: 0; }
+    .muted { color: #a9bfd3; }
+    button, input, textarea, select {
+      box-sizing: border-box;
+      width: 100%;
+      margin: 7px 0;
+      padding: 11px;
+      border-radius: 7px;
+      border: 1px solid #29445e;
+      font: inherit;
+    }
+    button {
+      background: #0891b2;
+      color: white;
+      cursor: pointer;
+    }
+    input, textarea, select {
+      background: #0b1220;
+      color: white;
+    }
+    textarea { min-height: 180px; }
+    #admin { display: none; }
+    .row { display: flex; gap: 8px; }
+    .row button { flex: 1; }
+    .hidden { display: none; }
+  </style>
 </head>
 <body>
+<main>
+  <h1>❄ FrozenSV Wiki</h1>
+  <p class="muted">Your guide to FrozenSV Survival.</p>
 
-<header>
-  <div class="wrap">
-    <a class="mark" href="index.html">Studio Name</a>
-    <button class="menu-toggle" aria-label="Toggle menu" aria-expanded="false">
-      <span></span><span></span><span></span>
-    </button>
-    <nav class="primary-nav">
-      <a href="index.html">Home</a>
-      <a href="work.html">Work</a>
-      <a href="about.html">About</a>
-      <a href="contact.html">Contact</a>
-    </nav>
-  </div>
-</header>
+  <input id="search" placeholder="Search wiki articles...">
+  <section id="articles">Loading articles...</section>
 
-<section class="hero wrap">
-  <div>
-    <div class="role">Design &amp; development practice</div>
-    <h1>We build things that hold up to a second look.</h1>
-  </div>
-  <div class="hero-side">
-    <p>An independent studio taking on a small number of projects at a time — websites, product design, and the occasional strange idea worth building.</p>
-    <a class="btn cta" href="contact.html">Start a project</a>
-  </div>
-</section>
+  <hr>
+  <p><a href="#admin" id="adminLink">Owner login</a></p>
 
-<section class="work-section wrap">
-  <div class="section-head">
-    <h2>Selected work</h2>
-    <a href="work.html" class="btn ghost">View all work</a>
-  </div>
-  <div class="grid">
-    <a class="project-card feature" href="projects/harbor.html">
-      <span class="num">01</span>
-      <div>
-        <h3>Harbor — booking platform redesign</h3>
-        <p>A ground-up redesign of a marina booking system used by 40+ ports, cutting average checkout time from six minutes to ninety seconds.</p>
-      </div>
-      <div class="meta"><span>Product design</span><span>Front-end build</span></div>
-    </a>
-    <a class="project-card" href="projects/alder-finch.html">
-      <span class="num">02</span>
-      <div>
-        <h3>Alder &amp; Finch</h3>
-        <p>Brand identity and e-commerce site for a small-batch furniture maker.</p>
-      </div>
-      <div class="meta"><span>Brand</span><span>Shopify</span></div>
-    </a>
-    <a class="project-card" href="projects/northline.html">
-      <span class="num">03</span>
-      <div>
-        <h3>Northline Transit</h3>
-        <p>Real-time arrivals dashboard for a regional transit authority.</p>
-      </div>
-      <div class="meta"><span>Data viz</span><span>React</span></div>
-    </a>
-  </div>
-</section>
+  <section id="admin">
+    <h2>Wiki Admin</h2>
 
-<section class="about-teaser wrap">
-  <h2>About the studio</h2>
-  <div class="about-body">
-    <p>We're a two-person studio working across design and development. No account managers, no hand-offs between departments — whoever you talk to at the start is who builds the thing.</p>
-    <p>We take on <strong>four to six projects a year</strong>, which means more time on each one and fewer templates pretending to be solutions.</p>
-    <div class="stats">
-      <div><b>11</b><span>Years practicing</span></div>
-      <div><b>60+</b><span>Projects shipped</span></div>
-      <div><b>6</b><span>Max projects / year</span></div>
+    <form id="loginForm">
+      <input id="email" type="email" placeholder="Owner email" required>
+      <input id="password" type="password"
+             placeholder="Password" autocomplete="current-password"
+             required>
+      <button type="submit">Sign in</button>
+    </form>
+
+    <div id="editor" class="hidden">
+      <button id="logout" type="button">Sign out</button>
+      <h3 id="formTitle">Create article</h3>
+
+      <form id="articleForm">
+        <input id="title" placeholder="Article title" maxlength="120" required>
+        <input id="slug" placeholder="URL slug (server-rules)"
+               pattern="[a-z0-9]+(-[a-z0-9]+)*" maxlength="120" required>
+        <input id="category" placeholder="Category" maxlength="60" required>
+        <textarea id="content" placeholder="Article content"
+                  maxlength="50000" required></textarea>
+        <button type="submit">Save article</button>
+        <button id="newArticle" type="button">New article</button>
+      </form>
+
+      <h3>Manage articles</h3>
+      <div id="manageArticles"></div>
     </div>
-    <a class="btn ghost" href="about.html" style="margin-top:32px; display:inline-block;">More about us</a>
-  </div>
-</section>
+  </section>
 
-<section class="contact-teaser wrap" style="border-bottom:none; text-align:left;">
-  <h2 style="font-size:clamp(30px, 4vw, 44px); max-width:16ch; margin-bottom:24px;">Have a project in mind? Tell us about it.</h2>
-  <a class="btn cta" href="contact.html">Get in touch</a>
-</section>
+  <p id="status" role="status" aria-live="polite"></p>
+</main>
 
-<footer>
-  <div class="wrap">
-    <span>© 2026 Ledger Studio</span>
-    <span><a href="work.html">Work</a> &nbsp;·&nbsp; <a href="about.html">About</a> &nbsp;·&nbsp; <a href="contact.html">Contact</a></span>
-  </div>
-</footer>
-
-<script src="js/script.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="wiki.js"></script>
 </body>
 </html>
