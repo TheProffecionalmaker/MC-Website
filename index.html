@@ -141,45 +141,6 @@
     </div>
   </section>
 
-  <section id="account">
-    <h2>Your account</h2>
-    <p class="muted">Create an account or sign in to manage your website profile.</p>
-    <div class="grid">
-      <form id="registerForm" class="card">
-        <h3>Create account</h3>
-        <label class="field-label" for="registerName">Display name</label>
-        <input id="registerName" maxlength="24" required autocomplete="nickname">
-        <label class="field-label" for="registerEmail">Email</label>
-        <input id="registerEmail" type="email" required autocomplete="email">
-        <label class="field-label" for="registerPassword">Password</label>
-        <input id="registerPassword" type="password" minlength="8"
-               required autocomplete="new-password">
-        <button class="primary" type="submit">Register</button>
-      </form>
-
-      <form id="loginForm" class="card">
-        <h3>Welcome back</h3>
-        <label class="field-label" for="loginEmail">Email</label>
-        <input id="loginEmail" type="email" required autocomplete="email">
-        <label class="field-label" for="loginPassword">Password</label>
-        <input id="loginPassword" type="password" required
-               autocomplete="current-password">
-        <button class="primary" type="submit">Sign in</button>
-        <button id="resetPassword" type="button">Forgot password?</button>
-      </form>
-    </div>
-    <p id="authStatus" class="status" aria-live="polite"></p>
-  </section>
-
-  <section id="profile" class="hidden">
-    <h2>Your profile</h2>
-    <div class="card">
-      <p>Signed in as <strong id="profileEmail"></strong></p>
-      <p>Display name: <strong id="profileName"></strong></p>
-      <button id="signOut">Sign out</button>
-    </div>
-  </section>
-
   <section id="wiki">
     <span class="pill">KNOWLEDGE BASE</span>
     <h2>FrozenSV Wiki</h2>
