@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Work — Studio Name</title>
+<meta name="description" content="Selected projects across product design, brand, and web development.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="mark" href="index.html">Studio Name</a>
+    <button class="menu-toggle" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="primary-nav">
+      <a href="index.html">Home</a>
+      <a href="work.html">Work</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<div class="page-head wrap">
+  <div class="eyebrow">Work</div>
+  <h1>Five projects, five different problems.</h1>
+  <p>A mix of product design, brand identity, and full builds. Filter by discipline, or just scroll — there isn't much here to get lost in yet.</p>
+</div>
+
+<section class="work-section wrap" style="border-bottom:none;">
+  <div class="section-head">
+    <div class="filters">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="product">Product design</button>
+      <button class="filter-btn" data-filter="brand">Brand</button>
+      <button class="filter-btn" data-filter="dev">Development</button>
+    </div>
+    <span class="count">5 projects</span>
+  </div>
+
+  <div class="grid">
+    <a class="project-card feature" href="projects/harbor.html" data-category="product dev">
+      <span class="num">01</span>
+      <div>
+        <h3>Harbor — booking platform redesign</h3>
+        <p>A ground-up redesign of a marina booking system used by 40+ ports, cutting average checkout time from six minutes to ninety seconds.</p>
+      </div>
+      <div class="meta"><span>Product design</span><span>Front-end build</span></div>
+    </a>
+
+    <a class="project-card" href="projects/alder-finch.html" data-category="brand dev">
+      <span class="num">02</span>
+      <div>
+        <h3>Alder &amp; Finch</h3>
+        <p>Brand identity and e-commerce site for a small-batch furniture maker.</p>
+      </div>
+      <div class="meta"><span>Brand</span><span>Shopify</span></div>
+    </a>
+
+    <a class="project-card" href="projects/northline.html" data-category="product dev">
+      <span class="num">03</span>
+      <div>
+        <h3>Northline Transit</h3>
+        <p>Real-time arrivals dashboard for a regional transit authority.</p>
+      </div>
+      <div class="meta"><span>Data viz</span><span>React</span></div>
+    </a>
+
+    <a class="project-card" href="projects/field-notes.html" data-category="product">
+      <span class="num">04</span>
+      <div>
+        <h3>Field Notes app</h3>
+        <p>An offline-first journaling app for field researchers.</p>
+      </div>
+      <div class="meta"><span>Mobile</span><span>iOS</span></div>
+    </a>
+
+    <a class="project-card" href="projects/loam.html" data-category="brand">
+      <span class="num">05</span>
+      <div>
+        <h3>Loam Coffee</h3>
+        <p>Packaging system and site for a roastery with three retail locations.</p>
+      </div>
+      <div class="meta"><span>Packaging</span><span>Web</span></div>
+    </a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Studio Name</span>
+    <span><a href="work.html">Work</a> &nbsp;·&nbsp; <a href="about.html">About</a> &nbsp;·&nbsp; <a href="contact.html">Contact</a></span>
+  </div>
+</footer>
+
+<script src="js/script.js"></script>
+</body>
+</html>
